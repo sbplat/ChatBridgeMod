@@ -1,0 +1,14 @@
+[{
+    "modid" : "chatbridge",
+    "name" : "ChatBridge",
+    "description" : "Chat bridge.",
+    "version" : "${version}",
+    "mcversion" : "${mcversion}",
+    "url" : "",
+    "updateUrl" : "",
+    "authorList" : ["sbplat"],
+    "credits" : "",
+    "logoFile" : "",
+    "screenshots" : [],
+    "dependencies" : []
+}]
