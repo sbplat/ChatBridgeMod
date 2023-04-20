@@ -20,15 +20,19 @@ import com.sbplat.chatbridge.configuration.*;
 import com.sbplat.chatbridge.server.*;
 import com.sbplat.chatbridge.utils.*;
 
-@Mod(modid = ChatBridge.MODID, version = ChatBridge.VERSION)
+@Mod(modid = ChatBridge.MOD_ID, name = ChatBridge.NAME, version = ChatBridge.VERSION)
 public class ChatBridge {
-    public static final String MODID = "chatbridge";
-    public static final String VERSION = "1.0";
+    public static final String MOD_ID = "chatbridge";
+    public static final String NAME = "ChatBridge";
+    public static final String VERSION = "0.0.1";
 
-    private static Config config;
+    @Mod.Instance(ChatBridge.MOD_ID)
+    public static ChatBridge INSTANCE;
 
-    private static ServerSingleClient server;
-    private static Process relayBotProcess;
+    private Config config;
+
+    private ServerSingleClient server;
+    private Process relayBotProcess;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) throws IOException {
@@ -62,7 +66,7 @@ public class ChatBridge {
     public void postInit(FMLPostInitializationEvent event) {
     }
 
-    public static void sendMessage(String message) throws IOException {
+    public void sendMessage(String message) throws IOException {
         server.sendMessage(message);
         Utils.displayChatMessage(new ServerMessage("You", message));
     }

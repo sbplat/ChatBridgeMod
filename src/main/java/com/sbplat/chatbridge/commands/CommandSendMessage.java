@@ -27,7 +27,7 @@ public class CommandSendMessage extends CommandBase {
         String message = messageBuilder.toString().trim();
 
         try {
-            ChatBridge.sendMessage(message);
+            ChatBridge.INSTANCE.sendMessage(message);
         } catch (IOException e) {
             e.printStackTrace();
         }
