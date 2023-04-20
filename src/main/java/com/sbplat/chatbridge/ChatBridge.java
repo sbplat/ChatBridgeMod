@@ -60,6 +60,7 @@ public class ChatBridge {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         ClientCommandHandler.instance.registerCommand(new CommandSendMessage());
+        ClientCommandHandler.instance.registerCommand(new CommandSendRawMessage());
     }
 
     @EventHandler
