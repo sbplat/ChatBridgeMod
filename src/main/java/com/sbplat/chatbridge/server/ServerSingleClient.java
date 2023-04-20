@@ -4,8 +4,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import com.sbplat.chatbridge.server.*;
-
 public class ServerSingleClient {
     private ServerSocket server;
     private Socket client;

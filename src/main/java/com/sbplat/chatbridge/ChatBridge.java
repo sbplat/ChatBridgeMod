@@ -8,6 +8,7 @@ import java.util.concurrent.*;
 import net.minecraft.client.Minecraft;
 
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -17,6 +18,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 import com.sbplat.chatbridge.commands.*;
 import com.sbplat.chatbridge.configuration.*;
+import com.sbplat.chatbridge.events.*;
 import com.sbplat.chatbridge.server.*;
 import com.sbplat.chatbridge.utils.*;
 
@@ -59,12 +61,19 @@ public class ChatBridge {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
+        ClientCommandHandler.instance.registerCommand(new CommandBindChat());
         ClientCommandHandler.instance.registerCommand(new CommandSendMessage());
         ClientCommandHandler.instance.registerCommand(new CommandSendRawMessage());
+
+        MinecraftForge.EVENT_BUS.register(new ClientChatEventHandler());
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+    }
+
+    public Config getConfig() {
+        return config;
     }
 
     public void sendMessage(String message) throws IOException {

@@ -79,3 +79,11 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+jar {
+    manifest {
+        attributes "FMLCorePlugin": "com.sbplat.chatbridge.asm.FMLLoadingPlugin",
+                   "FMLCorePluginContainsFMLMod": "true",
+                   "ModSide": "CLIENT"
+    }
+}
