@@ -3,6 +3,7 @@ package com.sbplat.chatbridge.utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 
 import com.sbplat.chatbridge.server.ServerMessage;
 
@@ -15,6 +16,6 @@ public class Utils {
     }
 
     public static void displayChatMessage(ServerMessage message) {
-        displayRawChatMessage(String.format("<%s> %s", message.getAuthor(), message.getContent()));
+        displayRawChatMessage(EnumChatFormatting.RED + "<" + EnumChatFormatting.DARK_AQUA + message.getAuthor() + EnumChatFormatting.RED + "> " + EnumChatFormatting.WHITE + message.getContent());
     }
 }
