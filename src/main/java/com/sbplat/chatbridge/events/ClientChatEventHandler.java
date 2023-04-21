@@ -25,7 +25,7 @@ public class ClientChatEventHandler {
 
         if (chatBindOption == ChatBindEnum.CHATBRIDGE || chatBindOption == ChatBindEnum.CHATBRIDGE_AND_SERVER) {
             // Invoke the send message command.
-            ClientCommandHandler.instance.executeCommand(Minecraft.getMinecraft().thePlayer, "/chatbridgesendrawmessage " + event.getMessage());
+            ClientCommandHandler.instance.executeCommand(Minecraft.getMinecraft().thePlayer, "/chatbridgesendmessage " + event.getMessage());
         }
     }
 }
