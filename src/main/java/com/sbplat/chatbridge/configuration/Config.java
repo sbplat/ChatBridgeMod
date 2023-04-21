@@ -9,14 +9,20 @@ public class Config {
     private Configuration config;
 
     private ChatBindEnum chatBindOption;
+    private String chatMessageFormat;
     private String token;
     private String channelID;
 
     public Config(File configFile) {
         config = new Configuration(configFile);
+        reload();
+    }
+
+    public void reload() {
         config.load();
         String chatBindEnumString = config.getString("bind", "Chat", "SERVER", "Chat bind option (SERVER, CHATBRIDGE, CHATBRIDGE_AND_SERVER)");
         chatBindOption = ChatBindEnum.fromString(chatBindEnumString);
+        chatMessageFormat = config.getString("chatMessageFormat", "Chat", "\u00A7c<\u00A73{0}\u00A7c> \u00A7f{1}", "Chat message format");
         token = config.getString("token", "Discord", "YOUR_DISCORD_BOT_TOKEN_HERE", "Discord bot token");
         channelID = config.getString("channelID", "Discord", "00000000000000000000", "Discord relay channel ID");
         config.save();
@@ -24,6 +30,10 @@ public class Config {
 
     public ChatBindEnum getChatBindOption() {
         return chatBindOption;
+    }
+
+    public String getChatMessageFormat() {
+        return chatMessageFormat;
     }
 
     public String getToken() {
@@ -36,6 +46,11 @@ public class Config {
 
     public void setChatBindOption(ChatBindEnum chatBindOption) {
         this.chatBindOption = chatBindOption;
+        save();
+    }
+
+    public void setChatMessageFormat(String chatMessageFormat) {
+        this.chatMessageFormat = chatMessageFormat;
         save();
     }
 
@@ -52,6 +67,7 @@ public class Config {
     public void save() {
         config.load();
         setConfig("bind", "Chat", "SERVER", chatBindOption.toString());
+        setConfig("chatMessageFormat", "Chat", "\u00A7c<\u00A73{0}\u00A7c> \u00A7f{1}", chatMessageFormat);
         setConfig("token", "Discord", "YOUR_DISCORD_BOT_TOKEN_HERE", token);
         setConfig("channelID", "Discord", "00000000000000000000", channelID);
         config.save();
