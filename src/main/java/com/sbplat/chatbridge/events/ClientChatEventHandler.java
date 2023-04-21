@@ -24,8 +24,8 @@ public class ClientChatEventHandler {
         }
 
         if (chatBindOption == ChatBindEnum.CHATBRIDGE || chatBindOption == ChatBindEnum.CHATBRIDGE_AND_SERVER) {
-            // Invoke the forge /c command.
-            ClientCommandHandler.instance.executeCommand(Minecraft.getMinecraft().thePlayer, "/c " + event.getMessage());
+            // Invoke the send message command.
+            ClientCommandHandler.instance.executeCommand(Minecraft.getMinecraft().thePlayer, "/chatbridgesendrawmessage " + event.getMessage());
         }
     }
 }

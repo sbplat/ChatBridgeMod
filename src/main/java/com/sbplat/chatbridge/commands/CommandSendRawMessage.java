@@ -1,6 +1,8 @@
 package com.sbplat.chatbridge.commands;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -14,7 +16,14 @@ import com.sbplat.chatbridge.ChatBridge;
 public class CommandSendRawMessage extends CommandBase {
     @Override
     public String getCommandName() {
-        return "raw";
+        return "chatbridgesendrawmessage";
+    }
+
+    @Override
+    public List<String> getCommandAliases() {
+        List<String> aliases = new ArrayList<String>();
+        aliases.add("raw");
+        return aliases;
     }
 
     @Override

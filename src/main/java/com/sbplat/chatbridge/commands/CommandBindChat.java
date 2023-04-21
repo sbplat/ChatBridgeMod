@@ -1,6 +1,8 @@
 package com.sbplat.chatbridge.commands;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -13,12 +15,19 @@ import com.sbplat.chatbridge.utils.Utils;
 public class CommandBindChat extends CommandBase {
     @Override
     public String getCommandName() {
-        return "bind";
+        return "chatbridgebind";
+    }
+
+    @Override
+    public List<String> getCommandAliases() {
+        List<String> aliases = new ArrayList<String>();
+        aliases.add("bind");
+        return aliases;
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName() + " <SERVER/0|CHATBRIDGE/1|CHATBRIDGE_AND_SERVER/2>";
+        return "/" + getCommandName() + " <SERVER|CHATBRIDGE|CHATBRIDGE_AND_SERVER>";
     }
 
     @Override
