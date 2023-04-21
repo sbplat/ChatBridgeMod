@@ -6,6 +6,7 @@ import net.minecraftforge.common.config.Configuration;
 
 public class Config {
 
+    private String configPath;
     private Configuration config;
 
     private ChatBindEnum chatBindOption;
@@ -13,12 +14,13 @@ public class Config {
     private String token;
     private String channelID;
 
-    public Config(File configFile) {
-        config = new Configuration(configFile);
+    public Config(String configPath) {
+        this.configPath = configPath;
         reload();
     }
 
     public void reload() {
+        config = new Configuration(getConfigFile());
         config.load();
         String chatBindEnumString = config.getString("bind", "Chat", "SERVER", "Chat bind option (SERVER, CHATBRIDGE, CHATBRIDGE_AND_SERVER)");
         chatBindOption = ChatBindEnum.fromString(chatBindEnumString);
@@ -71,6 +73,18 @@ public class Config {
         setConfig("token", "Discord", "YOUR_DISCORD_BOT_TOKEN_HERE", token);
         setConfig("channelID", "Discord", "00000000000000000000", channelID);
         config.save();
+    }
+
+    private File getConfigFile() {
+        File configFile = new File(configPath);
+        if (!configFile.exists()) {
+            try {
+                configFile.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return configFile;
     }
 
     private void setConfig(String name, String category, String defaultValue, String value) {

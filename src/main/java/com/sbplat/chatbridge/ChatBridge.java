@@ -45,7 +45,7 @@ public class ChatBridge {
             }
         }));
 
-        config = new Config(event.getSuggestedConfigurationFile());
+        config = new Config(event.getSuggestedConfigurationFile().getAbsolutePath());
 
         server = new ServerSingleClient(0, new ServerMessageListener() {
             @Override
@@ -62,6 +62,7 @@ public class ChatBridge {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         ClientCommandHandler.instance.registerCommand(new CommandBindChat());
+        ClientCommandHandler.instance.registerCommand(new CommandReload());
         ClientCommandHandler.instance.registerCommand(new CommandSendMessage());
         ClientCommandHandler.instance.registerCommand(new CommandSendRawMessage());
 
