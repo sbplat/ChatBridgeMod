@@ -27,5 +27,10 @@ public class ClientChatEventHandler {
             // Invoke the send message command.
             ClientCommandHandler.instance.executeCommand(Minecraft.getMinecraft().thePlayer, "/chatbridgesendmessage " + event.getMessage());
         }
+
+        if (event.isCanceled()) {
+            // Add the message to the "sent" list.
+            Minecraft.getMinecraft().ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
+        }
     }
 }

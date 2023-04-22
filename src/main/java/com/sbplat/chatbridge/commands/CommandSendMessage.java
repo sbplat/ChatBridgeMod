@@ -19,7 +19,7 @@ public class CommandSendMessage extends CommandBase {
     @Override
     public List<String> getCommandAliases() {
         List<String> aliases = new ArrayList<String>();
-        aliases.add("chat");
+        aliases.add("send");
         return aliases;
     }
 
