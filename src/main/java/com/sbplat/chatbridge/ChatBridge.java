@@ -50,6 +50,14 @@ public class ChatBridge {
         server = new ServerSingleClient(0, new ServerMessageListener() {
             @Override
             public void onMessageReceived(ServerMessage message) {
+                if (message.getContent().equals("/online")) {
+                    try {
+                        server.sendMessage(Minecraft.getMinecraft().getSession().getUsername());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                }
                 Utils.displayChatMessage(message);
             }
         });

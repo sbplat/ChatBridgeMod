@@ -19,7 +19,6 @@ public class Utils {
     }
 
     public static void displayChatMessage(ServerMessage message) {
-        // displayRawChatMessage(EnumChatFormatting.RED + "<" + EnumChatFormatting.DARK_AQUA + message.getAuthor() + EnumChatFormatting.RED + "> " + EnumChatFormatting.WHITE + message.getContent());
         displayRawChatMessage(MessageFormat.format(ChatBridge.INSTANCE.getConfig().getChatMessageFormat(), message.getAuthor(), message.getContent()));
     }
 }
