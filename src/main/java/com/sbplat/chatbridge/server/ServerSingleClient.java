@@ -61,7 +61,13 @@ public class ServerSingleClient {
         String encodedMessage = reader.readLine();
         String[] parts = encodedMessage.split(",");
         byte[] decodedAuthorBytes = Base64.getDecoder().decode(parts[0]);
-        byte[] decodedMessageBytes = Base64.getDecoder().decode(parts[1]);
+        byte[] decodedMessageBytes;
+        try {
+            // The message content may be empty if only an image is attached.
+            decodedMessageBytes = Base64.getDecoder().decode(parts[1]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            decodedMessageBytes = new byte[0];
+        }
         return new ServerMessage(new String(decodedAuthorBytes, "UTF-8"), new String(decodedMessageBytes, "UTF-8"));
     }
 
