@@ -30,7 +30,7 @@ public class ServerRelayBot {
             @Override
             public void run() {
                 ChatBridge.INSTANCE.available = false;
-                Utils.displayRawChatMessage("[ChatBridge] Relay bot process exited with code " + process.exitValue());
+                Utils.displayModChatMessage("Relay bot process exited with code " + process.exitValue());
             }
         });
     }

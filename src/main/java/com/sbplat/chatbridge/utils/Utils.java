@@ -21,4 +21,8 @@ public class Utils {
     public static void displayChatMessage(ServerMessage message) {
         displayRawChatMessage(MessageFormat.format(ChatBridge.INSTANCE.getConfig().getChatMessageFormat(), message.getAuthor(), message.getContent()));
     }
+
+    public static void displayModChatMessage(String message) {
+        displayRawChatMessage(MessageFormat.format("\u00A7c[\u00A7eChatBridge\u00A7c] \u00A7b{0}", message));
+    }
 }

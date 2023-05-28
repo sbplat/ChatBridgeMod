@@ -71,7 +71,7 @@ public class ChatBridge {
 
     public void sendMessage(String message) throws IOException {
         if (!available) {
-            Utils.displayChatMessage(new ServerMessage("ChatBridge", "ChatBridge is not available. Check the logs for more information."));
+            Utils.displayModChatMessage("ChatBridge is not available. Check the logs for more information.");
             return;
         }
         server.sendMessage(message);

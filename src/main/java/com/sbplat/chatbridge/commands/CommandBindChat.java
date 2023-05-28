@@ -43,7 +43,7 @@ public class CommandBindChat extends CommandBase {
             chatBindOption = ChatBindEnum.fromString(args[0]);
         }
 
-        Utils.displayRawChatMessage("Chat bind option set to " + chatBindOption.toString());
+        Utils.displayModChatMessage("Chat bind option set to " + chatBindOption.toString());
         ChatBridge.INSTANCE.getConfig().setChatBindOption(chatBindOption);
     }
 
