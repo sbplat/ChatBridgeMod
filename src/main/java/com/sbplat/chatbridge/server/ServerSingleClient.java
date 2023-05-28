@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import com.sbplat.chatbridge.ChatBridge;
+
 public class ServerSingleClient {
     private ServerSocket server;
     private Socket client;
@@ -36,6 +38,7 @@ public class ServerSingleClient {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                ChatBridge.INSTANCE.available = false;
             }
         });
         thread.start();
@@ -74,7 +77,7 @@ public class ServerSingleClient {
     private void listenForMessages() throws IOException {
         while (!client.isClosed()) {
             ServerMessage message = readMessage();
-            System.out.println("Received message from " + client.getInetAddress() + ":" + client.getPort() + ": <" + message.getAuthor() + "> " + message.getContent());
+            // System.out.println("Received message from " + client.getInetAddress() + ":" + client.getPort() + ": <" + message.getAuthor() + "> " + message.getContent());
             listener.onMessageReceived(message);
         }
         System.out.println("Stopped listening for messages from " + client.getInetAddress() + ":" + client.getPort());

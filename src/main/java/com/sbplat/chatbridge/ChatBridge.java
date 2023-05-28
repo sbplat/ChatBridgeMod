@@ -31,10 +31,12 @@ public class ChatBridge {
     @Mod.Instance(ChatBridge.MOD_ID)
     public static ChatBridge INSTANCE;
 
+    public static Boolean available = false;
+
     private Config config;
 
     private ServerSingleClient server;
-    private Process relayBotProcess;
+    private ServerRelayBot relayBot;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) throws IOException {
@@ -44,27 +46,8 @@ public class ChatBridge {
                 shutdown();
             }
         }));
-
         config = new Config(event.getSuggestedConfigurationFile().getAbsolutePath());
-
-        server = new ServerSingleClient(0, new ServerMessageListener() {
-            @Override
-            public void onMessageReceived(ServerMessage message) {
-                if (message.getContent().equals("/online")) {
-                    try {
-                        server.sendMessage(Minecraft.getMinecraft().getSession().getUsername());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return;
-                }
-                Utils.displayChatMessage(message);
-            }
-        });
-
-        startRelayBot("localhost", server.getPort());
-
-        server.listen();
+        restart();
     }
 
     @EventHandler
@@ -87,47 +70,38 @@ public class ChatBridge {
     }
 
     public void sendMessage(String message) throws IOException {
+        if (!available) {
+            Utils.displayChatMessage(new ServerMessage("ChatBridge", "ChatBridge is not available. Check the logs for more information."));
+            return;
+        }
         server.sendMessage(message);
         Utils.displayChatMessage(new ServerMessage("You", message));
     }
 
-    private void startRelayBot(String ip, int port) {
-        InputStream in = getClass().getClassLoader().getResourceAsStream("assets/chatbridge/bot.py");
-        // Create a directory called chatbridge in .minecraft.
-        File relayBotDirectory = new File(Minecraft.getMinecraft().mcDataDir, "chatbridge");
-        if (!relayBotDirectory.exists()) {
-            relayBotDirectory.mkdir();
-        }
-        // Delete the bot.py file if it already exists.
-        File relayBotFile = new File(relayBotDirectory, "bot.py");
-        if (relayBotFile.exists()) {
-            relayBotFile.delete();
-        }
-        // Copy the bot.py file from the jar over.
-        try {
-            relayBotFile.createNewFile();
-            FileOutputStream out = new FileOutputStream(relayBotFile);
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = in.read(buffer)) > 0) {
-                out.write(buffer, 0, len);
+    public void restart() throws IOException {
+        shutdown();
+        server = new ServerSingleClient(0, new ServerMessageListener() {
+            @Override
+            public void onMessageReceived(ServerMessage message) {
+                if (message.getContent().equals("/online")) {
+                    try {
+                        server.sendMessage(Minecraft.getMinecraft().getSession().getUsername());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                }
+                Utils.displayChatMessage(message);
             }
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ProcessBuilder pb = new ProcessBuilder("py", "-3", relayBotFile.getAbsolutePath(), ip, String.valueOf(port), config.getToken(), config.getChannelID());
-        pb.inheritIO();
-
-        try {
-            relayBotProcess = pb.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        });
+        relayBot = new ServerRelayBot("bot.py");
+        relayBot.start("localhost", server.getPort());
+        server.listen();
+        available = true;
     }
 
     private void shutdown() {
+        available = false;
         if (server != null) {
             try {
                 server.stop();
@@ -135,8 +109,8 @@ public class ChatBridge {
                 e.printStackTrace();
             }
         }
-        if (relayBotProcess != null) {
-            relayBotProcess.destroy();
+        if (relayBot != null) {
+            relayBot.stop();
         }
     }
 }

@@ -2,8 +2,10 @@ import asyncio
 import base64
 import socket
 import sys
+import os
 import time
 import threading
+
 import discord
 from discord.ext import commands
 
@@ -80,6 +82,12 @@ async def on_message(message):
         relay.send(fr"{encoded_author},{encoded_message}")
 
 async def main():
-    await bot.start(token)
+    try:
+        await bot.start(token)
+    except Exception as e:
+        debug(e)
+        await bot.close()
+        debug("Exiting due to an exception")
+        os._exit(1)
 
 asyncio.run(main())

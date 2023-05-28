@@ -33,9 +33,14 @@ public class CommandReload extends CommandBase {
         if (args.length != 0) {
             throw new WrongUsageException(getCommandUsage(sender));
         }
-
         ChatBridge.INSTANCE.getConfig().reload();
-        Utils.displayRawChatMessage("Reloaded ChatBridge");
+        Utils.displayRawChatMessage("[ChatBridge] Reloaded configuration");
+        try {
+            ChatBridge.INSTANCE.restart();
+            Utils.displayRawChatMessage("[ChatBridge] Restarted server and relay bot");
+        } catch (IOException e) {
+            Utils.displayRawChatMessage("[ChatBridge] Failed to restart server and relay bot");
+        }
     }
 
     @Override
