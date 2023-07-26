@@ -4,51 +4,52 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.*;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import com.sbplat.chatbridge.ChatBridge;
 import com.sbplat.chatbridge.configuration.ChatBindEnum;
 import com.sbplat.chatbridge.utils.Utils;
 
-public class CommandBindChat extends CommandBase {
-    @Override
-    public String getCommandName() {
+public class CommandBindChat {
+    public static String getCommandName() {
         return "chatbridgebind";
     }
 
-    @Override
-    public List<String> getCommandAliases() {
+    public static List<String> getCommandAliases() {
         List<String> aliases = new ArrayList<String>();
         aliases.add("bind");
         return aliases;
     }
 
-    @Override
-    public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName() + " <SERVER|CHATBRIDGE|CHATBRIDGE_AND_SERVER>";
-    }
-
-    @Override
-    public void processCommand(ICommandSender sender, String[] args) throws WrongUsageException {
-        if (args.length != 1) {
-            throw new WrongUsageException(getCommandUsage(sender));
-        }
-
-        ChatBindEnum chatBindOption;
-        try {
-            chatBindOption = ChatBindEnum.fromInt(Integer.parseInt(args[0]));
-        } catch (NumberFormatException e) {
-            chatBindOption = ChatBindEnum.fromString(args[0]);
-        }
-
+    public static void setChatBindOption(ChatBindEnum chatBindOption) {
         Utils.displayModChatMessage("Chat bind option set to " + chatBindOption.toString());
         ChatBridge.INSTANCE.getConfig().setChatBindOption(chatBindOption);
     }
 
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 0;
+    public static LiteralCommandNode<FabricClientCommandSource> register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        return dispatcher.register(ClientCommandManager.literal(getCommandName())
+            .then(ClientCommandManager.argument("bindOptionIndex", IntegerArgumentType.integer(0, ChatBindEnum.values().length - 1))
+                .executes((context) -> {
+                    setChatBindOption(ChatBindEnum.fromInt(IntegerArgumentType.getInteger(context, "bindOptionIndex")));
+                    return 1;
+                })
+            ).then(ClientCommandManager.argument("bindOptionValue", StringArgumentType.word())
+                .suggests((context, builder) -> {
+                    for (ChatBindEnum chatBindOption : ChatBindEnum.values()) {
+                        builder.suggest(chatBindOption.toString().toLowerCase());
+                    }
+                    return builder.buildFuture();
+                })
+                .executes((context) -> {
+                    setChatBindOption(ChatBindEnum.fromString(StringArgumentType.getString(context, "bindOptionValue")));
+                    return 1;
+                })
+            )
+        );
     }
 }

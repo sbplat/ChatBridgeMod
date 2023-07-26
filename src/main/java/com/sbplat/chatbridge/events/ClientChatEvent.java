@@ -1,7 +1,5 @@
 package com.sbplat.chatbridge.events;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
-
 public class ClientChatEvent extends Event {
     private String message;
 
@@ -9,12 +7,11 @@ public class ClientChatEvent extends Event {
         this.message = message;
     }
 
-    @Override
-    public boolean isCancelable() {
-        return true;
-    }
-
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String newMessage) {
+        message = newMessage;
     }
 }

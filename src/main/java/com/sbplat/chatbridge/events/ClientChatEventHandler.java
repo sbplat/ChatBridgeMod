@@ -2,15 +2,12 @@ package com.sbplat.chatbridge.events;
 
 import net.minecraft.client.Minecraft;
 
-import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 import com.sbplat.chatbridge.ChatBridge;
+import com.sbplat.chatbridge.commands.CommandSendMessage;
 import com.sbplat.chatbridge.configuration.ChatBindEnum;
 
 public class ClientChatEventHandler {
-    @SubscribeEvent
-    public void onClientChat(ClientChatEvent event) {
+    public static void onClientChat(ClientChatEvent event) {
         // Ignore commands.
         if (event.getMessage().startsWith("/")) {
             return;
@@ -25,12 +22,12 @@ public class ClientChatEventHandler {
 
         if (chatBindOption == ChatBindEnum.CHATBRIDGE || chatBindOption == ChatBindEnum.CHATBRIDGE_AND_SERVER) {
             // Invoke the send message command.
-            ClientCommandHandler.instance.executeCommand(Minecraft.getMinecraft().thePlayer, "/chatbridgesendmessage " + event.getMessage());
+            CommandSendMessage.sendMessage(event.getMessage());
         }
 
         if (event.isCanceled()) {
             // Add the message to the "sent" list.
-            Minecraft.getMinecraft().ingameGUI.getChatGUI().addToSentMessages(event.getMessage());
+            Minecraft.getInstance().gui.getChat().addRecentChat(event.getMessage());
         }
     }
 }

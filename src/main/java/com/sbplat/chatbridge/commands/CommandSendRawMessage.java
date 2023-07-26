@@ -4,49 +4,41 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.*;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 
-import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import com.sbplat.chatbridge.ChatBridge;
+import com.sbplat.chatbridge.utils.Utils;
 
-public class CommandSendRawMessage extends CommandBase {
-    @Override
-    public String getCommandName() {
+public class CommandSendRawMessage {
+    public static String getCommandName() {
         return "chatbridgesendrawmessage";
     }
 
-    @Override
-    public List<String> getCommandAliases() {
+    public static List<String> getCommandAliases() {
         List<String> aliases = new ArrayList<String>();
         aliases.add("raw");
         return aliases;
     }
 
-    @Override
-    public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName() + " <raw message>";
-    }
-
-    @Override
-    public void processCommand(ICommandSender sender, String[] args) throws WrongUsageException {
-        String message = String.join(" ", args);
-        if (message.isEmpty()) {
-            throw new WrongUsageException(getCommandUsage(sender));
-        }
-
-        // First, try invoking the message on the client side.
-        if (ClientCommandHandler.instance.executeCommand(sender, message) == 0) {
-            // The message was not handled by the client, so let vanilla handle it.
-            Minecraft.getMinecraft().thePlayer.sendChatMessage(message);
-        }
-    }
-
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 0;
+    public static LiteralCommandNode<FabricClientCommandSource> register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        // This command is a placeholder so it can be autocompleted.
+        // The actual command is handled by the ChatScreen mixin in mixin/MixinChatScreen.java.
+        return dispatcher.register(ClientCommandManager.literal(getCommandName())
+            .then(ClientCommandManager.argument("rawMessage", StringArgumentType.greedyString())
+                .executes((context) -> {
+                    Utils.displayModChatMessage("How did this get executed?");
+                    return 1;
+                })
+            )
+        );
     }
 }

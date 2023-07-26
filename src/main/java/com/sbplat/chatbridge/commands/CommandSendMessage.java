@@ -4,37 +4,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.*;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import com.sbplat.chatbridge.ChatBridge;
 
-public class CommandSendMessage extends CommandBase {
-    @Override
-    public String getCommandName() {
+public class CommandSendMessage {
+    public static String getCommandName() {
         return "chatbridgesendmessage";
     }
 
-    @Override
-    public List<String> getCommandAliases() {
+    public static List<String> getCommandAliases() {
         List<String> aliases = new ArrayList<String>();
         aliases.add("send");
         return aliases;
     }
 
-    @Override
-    public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName() + " <message>";
-    }
-
-    @Override
-    public void processCommand(ICommandSender sender, String[] args) throws WrongUsageException {
-        String message = String.join(" ", args);
-        if (message.isEmpty()) {
-            throw new WrongUsageException(getCommandUsage(sender));
-        }
-
+    public static void sendMessage(String message) {
         try {
             ChatBridge.INSTANCE.sendMessage(message);
         } catch (IOException e) {
@@ -42,8 +32,14 @@ public class CommandSendMessage extends CommandBase {
         }
     }
 
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 0;
+    public static LiteralCommandNode<FabricClientCommandSource> register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        return dispatcher.register(ClientCommandManager.literal(getCommandName())
+            .then(ClientCommandManager.argument("message", StringArgumentType.greedyString())
+                .executes((context) -> {
+                    sendMessage(StringArgumentType.getString(context, "message"));
+                    return 1;
+                })
+            )
+        );
     }
 }

@@ -55,7 +55,7 @@ public class ServerRelayBot {
             throw new IOException("Resource " + relativeBotPath + " not found.");
         }
         // Create a directory called chatbridge in .minecraft.
-        File botDirectory = new File(Minecraft.getMinecraft().mcDataDir, "chatbridge");
+        File botDirectory = new File(Minecraft.getInstance().gameDirectory, "chatbridge");
         if (!botDirectory.exists()) {
             botDirectory.mkdir();
         }

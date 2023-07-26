@@ -1,13 +1,17 @@
 package com.sbplat.chatbridge.configuration;
 
-import java.io.File;
+import java.io.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.lang.reflect.Type;
 
-import net.minecraftforge.common.config.Configuration;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 public class Config {
 
     private String configPath;
-    private Configuration config;
 
     private ChatBindEnum chatBindOption;
     private String chatMessageFormat;
@@ -20,14 +24,22 @@ public class Config {
     }
 
     public void reload() {
-        config = new Configuration(getConfigFile());
-        config.load();
-        String chatBindEnumString = config.getString("bind", "Chat", "SERVER", "Chat bind option (SERVER, CHATBRIDGE, CHATBRIDGE_AND_SERVER)");
-        chatBindOption = ChatBindEnum.fromString(chatBindEnumString);
-        chatMessageFormat = config.getString("chatMessageFormat", "Chat", "\u00A7c<\u00A73{0}\u00A7c> \u00A7f{1}", "Chat message format");
-        token = config.getString("token", "Discord", "YOUR_DISCORD_BOT_TOKEN_HERE", "Discord bot token");
-        channelID = config.getString("channelID", "Discord", "00000000000000000000", "Discord relay channel ID");
-        config.save();
+        Gson gson = new Gson();
+        Type mapType = new TypeToken<Map<String, String>>() {}.getType();
+        Map<String, String> map = null;
+        try {
+            map = gson.fromJson(new FileReader(getConfigFile()), mapType);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (map == null) {
+            map = new HashMap<>();
+        }
+        chatBindOption = ChatBindEnum.fromString(map.getOrDefault("bind", "SERVER"));
+        chatMessageFormat = map.getOrDefault("chatMessageFormat", "\u00A7c<\u00A73{0}\u00A7c> \u00A7f{1}");
+        token = map.getOrDefault("token", "YOUR_DISCORD_BOT_TOKEN_HERE");
+        channelID = map.getOrDefault("channelID", "00000000000000000000");
+        save();
     }
 
     public ChatBindEnum getChatBindOption() {
@@ -67,12 +79,17 @@ public class Config {
     }
 
     public void save() {
-        config.load();
-        setConfig("bind", "Chat", "SERVER", chatBindOption.toString());
-        setConfig("chatMessageFormat", "Chat", "\u00A7c<\u00A73{0}\u00A7c> \u00A7f{1}", chatMessageFormat);
-        setConfig("token", "Discord", "YOUR_DISCORD_BOT_TOKEN_HERE", token);
-        setConfig("channelID", "Discord", "00000000000000000000", channelID);
-        config.save();
+        Map<String, String> map = new HashMap<>();
+        map.put("bind", chatBindOption.toString());
+        map.put("chatMessageFormat", chatMessageFormat);
+        map.put("token", token);
+        map.put("channelID", channelID);
+        try (FileWriter writer = new FileWriter(getConfigFile())) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            writer.write(gson.toJson(map));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private File getConfigFile() {
@@ -85,9 +102,5 @@ public class Config {
             }
         }
         return configFile;
-    }
-
-    private void setConfig(String name, String category, String defaultValue, String value) {
-        config.get(category, name, defaultValue).set(value);
     }
 }

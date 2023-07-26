@@ -4,32 +4,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.*;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import com.sbplat.chatbridge.ChatBridge;
 
-public class CommandOnline extends CommandBase {
-    @Override
-    public String getCommandName() {
+public class CommandOnline {
+    public static String getCommandName() {
         return "chatbridgeonline";
     }
 
-    @Override
-    public List<String> getCommandAliases() {
+    public static List<String> getCommandAliases() {
         List<String> aliases = new ArrayList<String>();
         aliases.add("online");
         return aliases;
     }
 
-    @Override
-    public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName();
-    }
-
-    @Override
-    public void processCommand(ICommandSender sender, String[] args) throws WrongUsageException {
+    public static void sendOnlineMessage() {
         try {
             ChatBridge.INSTANCE.sendMessage("/online");
         } catch (IOException e) {
@@ -37,8 +32,12 @@ public class CommandOnline extends CommandBase {
         }
     }
 
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 0;
+    public static LiteralCommandNode<FabricClientCommandSource> register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        return dispatcher.register(ClientCommandManager.literal(getCommandName())
+            .executes((context) -> {
+                sendOnlineMessage();
+                return 1;
+            })
+        );
     }
 }

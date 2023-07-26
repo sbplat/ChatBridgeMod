@@ -4,35 +4,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.*;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import com.sbplat.chatbridge.ChatBridge;
 import com.sbplat.chatbridge.utils.Utils;
 
-public class CommandReload extends CommandBase {
-    @Override
-    public String getCommandName() {
+public class CommandReload {
+    public static String getCommandName() {
         return "chatbridgereload";
     }
 
-    @Override
-    public List<String> getCommandAliases() {
+    public static List<String> getCommandAliases() {
         List<String> aliases = new ArrayList<String>();
         return aliases;
     }
 
-    @Override
-    public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName();
-    }
-
-    @Override
-    public void processCommand(ICommandSender sender, String[] args) throws WrongUsageException {
-        if (args.length != 0) {
-            throw new WrongUsageException(getCommandUsage(sender));
-        }
+    public static void reloadAll() {
         ChatBridge.INSTANCE.getConfig().reload();
         Utils.displayModChatMessage("Reloaded configuration");
         try {
@@ -43,8 +35,12 @@ public class CommandReload extends CommandBase {
         }
     }
 
-    @Override
-    public int getRequiredPermissionLevel() {
-        return 0;
+    public static LiteralCommandNode<FabricClientCommandSource> register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+        return dispatcher.register(ClientCommandManager.literal(getCommandName())
+            .executes((context) -> {
+                reloadAll();
+                return 1;
+            })
+        );
     }
 }

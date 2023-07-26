@@ -1,0 +1,32 @@
+{
+	"schemaVersion": 1,
+	"id": "chatbridge",
+	"version": "${version}",
+	"name": "ChatBridge",
+	"description": "",
+	"authors": [
+		"sbplat"
+	],
+	"contact": {
+		"homepage": "https://github.com/sbplat/ChatBridgeMod",
+		"sources": "https://github.com/sbplat/ChatBridgeMod",
+		"issues": "https://github.com/sbplat/ChatBridgeMod/issues"
+	},
+	"license": "Apache License 2.0",
+	"icon": "",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.sbplat.chatbridge.ChatBridge"
+		]
+	},
+	"mixins": [
+		"chatbridge.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.21",
+		"minecraft": "~1.19.3",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}

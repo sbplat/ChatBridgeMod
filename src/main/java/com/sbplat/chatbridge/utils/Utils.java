@@ -3,18 +3,17 @@ package com.sbplat.chatbridge.utils;
 import java.text.MessageFormat;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 
 import com.sbplat.chatbridge.ChatBridge;
 import com.sbplat.chatbridge.server.ServerMessage;
 
 public class Utils {
     public static void displayRawChatMessage(String message) {
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
-            player.addChatMessage(new ChatComponentText(message));
+            player.sendSystemMessage(Component.literal(message));
         }
     }
 
