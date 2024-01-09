@@ -8,9 +8,9 @@ ChatBridge is a 1.8.9 (forge) / 1.19.3 (fabric) Minecraft mod that enables bidir
 ```sh
 > pip install discord.py
 ```
-2. Download the [latest release](/releases) or [build](##building-from-source) it yourself.
+2. Download the [latest release](https://github.com/sbplat/ChatBridgeMod/releases) or [build](#building-from-source) it yourself.
 3. Copy the mod to your mods folder (.minecraft/mods).
-4. Start your instance of Minecraft. ChatBridge will automatically create a configuration file in .minecraft/config. Edit this configuration file accordingly (see the [configuration](##configuration) section for more information).
+4. Start your instance of Minecraft. ChatBridge will automatically create a configuration file in .minecraft/config. Edit this configuration file accordingly (see the [configuration](#configuration) section for more information).
 5. Run the Minecraft command `/chatbridgereload` to force ChatBridge to reload its configurations. You have successfully installed ChatBridge!
 
 ## Commands
@@ -18,7 +18,7 @@ ChatBridge is a 1.8.9 (forge) / 1.19.3 (fabric) Minecraft mod that enables bidir
 #### chatbridgebind
 
 Aliases: `bind`
-Set the [bind](####bind) option via a command.
+Set the [bind](#bind) option via a command.
 
 #### chatbridgeonline
 
@@ -112,7 +112,7 @@ Once you've made your changes, save the file. Then, go back to Minecraft and run
 
 ## Custom Chat Server
 
-The chat server implementation is located in `src/main/resources/assets/chatbridge/bot.py`. This file can be modified to use a different chat server. Once you've made the changes, [build](##building-from-source) the project again.
+The chat server implementation is located in `src/main/resources/assets/chatbridge/bot.py`. This file can be modified to use a different chat server. Once you've made the changes, [build](#building-from-source) the project again.
 
 ## Troubleshooting
 
