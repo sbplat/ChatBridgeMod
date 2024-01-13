@@ -13,9 +13,10 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-    - name: Clone Repository and Change Directory
-      run: |
-        git clone ${{ github.repositoryUrl }} && cd "$(basename "$_" .git)"
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Setup Java
       uses: actions/setup-java@v4
@@ -36,31 +37,6 @@ jobs:
         name: jar
         path: build/libs/*.jar
 
-    - name: Get Branch
-      # https://stackoverflow.com/a/72959712
-      run: |
-        raw=$(git branch -r --contains ${{ github.ref }})
-        echo "raw: $raw"
-        branch=${raw##*/}
-        echo "branch: $branch"
-        echo "branch=$branch" >> $GITHUB_ENV
-
-    - name: Get Previous Tag
-      id: previousTag
-      run: |
-        name=$(git --no-pager tag --sort=creatordate --merged ${{ env.branch }} | tail -2 | head -1)
-        echo "previousTag: $name"
-        echo "previousTag=$name" >> $GITHUB_ENV
-
-    - name: Update CHANGELOG
-      id: changelog
-      uses: requarks/changelog-action@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        fromTag: ${{ github.ref_name }}
-        toTag: ${{ env.previousTag }}
-        writeToFile: false
-
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
@@ -68,6 +44,5 @@ jobs:
         draft: true
         makeLatest: true
         name: ${{ github.ref_name }}
-        body: ${{ steps.changelog.outputs.changes }}
         artifacts: build/libs/*.jar
         token: ${{ secrets.GITHUB_TOKEN }}
