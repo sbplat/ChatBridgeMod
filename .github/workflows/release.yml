@@ -57,6 +57,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         fromTag: ${{ github.ref_name }}
         toTag: ${{ env.previousTag }}
+        restrictToTypes: feat,fix,perf,refactor
         writeToFile: false
 
     - name: Create Release
