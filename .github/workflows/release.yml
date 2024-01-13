@@ -1,0 +1,60 @@
+name: release
+on:
+  push:
+    tags:
+      # First tag is forge-1.8.9-v0.0.0
+      - forge-1.8.9-v[0-9]+.[0-9]+.[0-9]+
+
+jobs:
+  release:
+    name: Release
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: 1.8
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: jar
+        path: build/libs/*.jar
+
+    - name: Get Previous Tag
+      id: previousTag
+      run: |
+        name=$(git --no-pager tag --sort=creatordate --merged ${{ github.ref_name }} | tail -2 | head -1)
+        echo "previousTag: $name"
+        echo "previousTag=$name" >> $GITHUB_ENV
+
+    - name: Update CHANGELOG
+      id: changelog
+      uses: requarks/changelog-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fromTag: ${{ github.ref_name }}
+        toTag: ${{ env.previousTag }}
+        writeToFile: false
+
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        draft: true
+        makeLatest: true
+        name: ${{ github.ref_name }}
+        body: ${{ steps.changelog.outputs.changes }}
+        artifacts: build/libs/*.jar
+        token: ${{ secrets.GITHUB_TOKEN }}
