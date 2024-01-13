@@ -1,9 +1,9 @@
 package com.sbplat.chatbridge.configuration;
 
 import java.io.*;
-import java.util.Map;
-import java.util.HashMap;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,7 +36,8 @@ public class Config {
             map = new HashMap<>();
         }
         chatBindOption = ChatBindEnum.fromString(map.getOrDefault("bind", "SERVER"));
-        chatMessageFormat = map.getOrDefault("chatMessageFormat", "\u00A7c<\u00A73{0}\u00A7c> \u00A7f{1}");
+        chatMessageFormat =
+                map.getOrDefault("chatMessageFormat", "\u00A7c<\u00A73{0}\u00A7c> \u00A7f{1}");
         token = map.getOrDefault("token", "YOUR_DISCORD_BOT_TOKEN_HERE");
         channelID = map.getOrDefault("channelID", "00000000000000000000");
         save();

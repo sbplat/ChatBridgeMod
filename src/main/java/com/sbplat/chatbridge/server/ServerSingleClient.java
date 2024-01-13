@@ -24,7 +24,11 @@ public class ServerSingleClient {
     public void listen() throws IOException {
         System.out.println("Listening for connections on port " + server.getLocalPort() + "...");
         client = server.accept();
-        System.out.println("Connection from " + client.getInetAddress() + ":" + client.getPort() + " has been established!");
+        System.out.println("Connection from "
+                + client.getInetAddress()
+                + ":"
+                + client.getPort()
+                + " has been established!");
 
         reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
@@ -34,7 +38,11 @@ public class ServerSingleClient {
                 try {
                     listenForMessages();
                 } catch (SocketException e) {
-                    System.out.println("Connection from " + client.getInetAddress() + ":" + client.getPort() + " has been closed!");
+                    System.out.println("Connection from "
+                            + client.getInetAddress()
+                            + ":"
+                            + client.getPort()
+                            + " has been closed!");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -71,15 +79,20 @@ public class ServerSingleClient {
         } catch (ArrayIndexOutOfBoundsException e) {
             decodedMessageBytes = new byte[0];
         }
-        return new ServerMessage(new String(decodedAuthorBytes, "UTF-8"), new String(decodedMessageBytes, "UTF-8"));
+        return new ServerMessage(
+                new String(decodedAuthorBytes, "UTF-8"), new String(decodedMessageBytes, "UTF-8"));
     }
 
     private void listenForMessages() throws IOException {
         while (!client.isClosed()) {
             ServerMessage message = readMessage();
-            // System.out.println("Received message from " + client.getInetAddress() + ":" + client.getPort() + ": <" + message.getAuthor() + "> " + message.getContent());
+            // System.out.println("Received message from " + client.getInetAddress() + ":" +
+            // client.getPort() + ": <" + message.getAuthor() + "> " + message.getContent());
             listener.onMessageReceived(message);
         }
-        System.out.println("Stopped listening for messages from " + client.getInetAddress() + ":" + client.getPort());
+        System.out.println("Stopped listening for messages from "
+                + client.getInetAddress()
+                + ":"
+                + client.getPort());
     }
 }

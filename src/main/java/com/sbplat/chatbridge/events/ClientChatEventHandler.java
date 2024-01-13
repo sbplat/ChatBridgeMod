@@ -1,10 +1,10 @@
 package com.sbplat.chatbridge.events;
 
-import net.minecraft.client.Minecraft;
-
 import com.sbplat.chatbridge.ChatBridge;
 import com.sbplat.chatbridge.commands.CommandSendMessage;
 import com.sbplat.chatbridge.configuration.ChatBindEnum;
+
+import net.minecraft.client.Minecraft;
 
 public class ClientChatEventHandler {
     public static void onClientChat(ClientChatEvent event) {
@@ -20,7 +20,8 @@ public class ClientChatEventHandler {
             event.setCanceled(true);
         }
 
-        if (chatBindOption == ChatBindEnum.CHATBRIDGE || chatBindOption == ChatBindEnum.CHATBRIDGE_AND_SERVER) {
+        if (chatBindOption == ChatBindEnum.CHATBRIDGE
+                || chatBindOption == ChatBindEnum.CHATBRIDGE_AND_SERVER) {
             // Invoke the send message command.
             CommandSendMessage.sendMessage(event.getMessage());
         }

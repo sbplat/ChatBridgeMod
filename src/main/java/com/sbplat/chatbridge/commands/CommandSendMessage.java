@@ -7,11 +7,10 @@ import java.util.List;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.*;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.sbplat.chatbridge.ChatBridge;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-
-import com.sbplat.chatbridge.ChatBridge;
 
 public class CommandSendMessage {
     public static String getCommandName() {
@@ -32,14 +31,13 @@ public class CommandSendMessage {
         }
     }
 
-    public static LiteralCommandNode<FabricClientCommandSource> register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+    public static LiteralCommandNode<FabricClientCommandSource> register(
+            CommandDispatcher<FabricClientCommandSource> dispatcher) {
         return dispatcher.register(ClientCommandManager.literal(getCommandName())
-            .then(ClientCommandManager.argument("message", StringArgumentType.greedyString())
-                .executes((context) -> {
-                    sendMessage(StringArgumentType.getString(context, "message"));
-                    return 1;
-                })
-            )
-        );
+                .then(ClientCommandManager.argument("message", StringArgumentType.greedyString())
+                        .executes((context) -> {
+                            sendMessage(StringArgumentType.getString(context, "message"));
+                            return 1;
+                        })));
     }
 }

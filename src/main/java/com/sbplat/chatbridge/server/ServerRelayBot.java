@@ -4,10 +4,10 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import net.minecraft.client.Minecraft;
-
 import com.sbplat.chatbridge.ChatBridge;
 import com.sbplat.chatbridge.utils.Utils;
+
+import net.minecraft.client.Minecraft;
 
 public class ServerRelayBot {
     private Process process;
@@ -23,14 +23,22 @@ public class ServerRelayBot {
     }
 
     public void start(String ip, int port) throws IOException {
-        ProcessBuilder pb = new ProcessBuilder("py", "-3", botFile.getAbsolutePath(), ip, String.valueOf(port), ChatBridge.INSTANCE.getConfig().getToken(), ChatBridge.INSTANCE.getConfig().getChannelID());
+        ProcessBuilder pb = new ProcessBuilder(
+                "py",
+                "-3",
+                botFile.getAbsolutePath(),
+                ip,
+                String.valueOf(port),
+                ChatBridge.INSTANCE.getConfig().getToken(),
+                ChatBridge.INSTANCE.getConfig().getChannelID());
         pb.inheritIO();
         process = pb.start();
         createExitHookThread(new Runnable() {
             @Override
             public void run() {
                 ChatBridge.INSTANCE.available = false;
-                Utils.displayModChatMessage("Relay bot process exited with code " + process.exitValue());
+                Utils.displayModChatMessage(
+                        "Relay bot process exited with code " + process.exitValue());
             }
         });
     }
@@ -50,7 +58,9 @@ public class ServerRelayBot {
     }
 
     private File copyBotResource(String relativeBotPath) throws IOException {
-        InputStream in = getClass().getClassLoader().getResourceAsStream("assets/chatbridge/" + relativeBotPath);
+        InputStream in = getClass()
+                .getClassLoader()
+                .getResourceAsStream("assets/chatbridge/" + relativeBotPath);
         if (in == null) {
             throw new IOException("Resource " + relativeBotPath + " not found.");
         }

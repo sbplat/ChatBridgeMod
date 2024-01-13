@@ -1,6 +1,7 @@
 plugins {
 	id 'fabric-loom' version '1.3-SNAPSHOT'
 	id 'maven-publish'
+	id 'com.diffplug.spotless' version '6.23.3'
 }
 
 version = project.mod_version
@@ -29,6 +30,20 @@ repositories {
 // 	}
 
 // }
+
+spotless {
+    java {
+        target project.fileTree('src/main/java')
+
+        palantirJavaFormat('2.39.0').style("AOSP")
+
+        importOrder('java', 'javax', 'org', 'com', 'net', 'io')
+        toggleOffOn()
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}
 
 dependencies {
 	// To change the versions see the gradle.properties file
