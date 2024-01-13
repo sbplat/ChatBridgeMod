@@ -33,10 +33,18 @@ jobs:
         name: jar
         path: build/libs/*.jar
 
+    - name: Get Branch
+      # https://stackoverflow.com/a/63747076
+      run: |
+        raw=$(git branch -r --contains ${{ github.ref }})
+        branch=${raw/origin\/}
+        echo "branch: $branch"
+        echo "branch=$branch" >> $GITHUB_ENV
+
     - name: Get Previous Tag
       id: previousTag
       run: |
-        name=$(git --no-pager tag --sort=creatordate --merged ${{ github.ref_name }} | tail -2 | head -1)
+        name=$(git --no-pager tag --sort=creatordate --merged ${{ env.branch }} | tail -2 | head -1)
         echo "previousTag: $name"
         echo "previousTag=$name" >> $GITHUB_ENV
 
