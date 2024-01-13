@@ -13,14 +13,9 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Access forge-1.8.9 Branch
+    - name: Clone Repository and Change Directory
       run: |
-        git fetch origin forge-1.8.9 --update-head-ok
+        git clone ${{ github.repositoryUrl }} && cd "$(basename "$_" .git)"
 
     - name: Setup Java
       uses: actions/setup-java@v4
