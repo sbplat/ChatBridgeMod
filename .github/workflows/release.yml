@@ -22,7 +22,7 @@ jobs:
     - name: Fetch Branch and Tags
       run: |
         git checkout fabric-1.19.3
-        git fetch --prune --unshallow --tags
+        git fetch --prune --tags --depth=2147483647
 
     - name: Get Previous Tag
       id: previousTag
