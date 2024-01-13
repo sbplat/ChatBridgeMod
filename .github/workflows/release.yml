@@ -1,9 +1,13 @@
 name: release
+
 on:
   push:
     tags:
       # First tag is forge-1.8.9-v0.0.0
       - forge-1.8.9-v[0-9]+.[0-9]+.[0-9]+
+
+env:
+  ACTIONS_STEP_DEBUG: true
 
 jobs:
   release:
@@ -37,6 +41,7 @@ jobs:
     - name: Get Branch
       # https://stackoverflow.com/a/72959712
       run: |
+        echo "ref: ${{ github.ref }}"
         raw=$(git branch -r --contains ${{ github.ref }})
         echo "raw: $raw"
         branch=${raw##*/}
