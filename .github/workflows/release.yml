@@ -17,6 +17,19 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Fetch Branch and Tags
+      run: |
+        git checkout fabric-1.19.3
+        git fetch --prune --unshallow --tags
+
+    - name: Get Previous Tag
+      id: previousTag
+      run: |
+        name=$(git --no-pager tag --sort=creatordate --merged fabric-1.19.3 | tail -n 2 | head -n 1)
+        echo "previousTag: $name"
+        echo "previousTag=$name" >> $GITHUB_ENV
 
     - name: Setup Java
       uses: actions/setup-java@v4
@@ -37,6 +50,15 @@ jobs:
         name: jar
         path: build/libs/*.jar
 
+    - name: Update CHANGELOG
+      id: changelog
+      uses: requarks/changelog-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fromTag: ${{ github.ref_name }}
+        toTag: ${{ env.previousTag }}
+        writeToFile: false
+
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
@@ -44,5 +66,6 @@ jobs:
         draft: true
         makeLatest: true
         name: ${{ github.ref_name }}
+        body: ${{ steps.changelog.outputs.changes }}
         artifacts: build/libs/*.jar
         token: ${{ secrets.GITHUB_TOKEN }}
